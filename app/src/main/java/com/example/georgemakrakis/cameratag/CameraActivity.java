@@ -9,6 +9,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.hardware.Camera;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -32,6 +34,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
@@ -117,6 +121,7 @@ public class CameraActivity extends AppCompatActivity
         return image;
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -135,8 +140,14 @@ public class CameraActivity extends AppCompatActivity
                 Paint paint = new Paint();
                 paint.setColor(Color.RED);
                 paint.setTextSize(200);
+                paint.setTextAlign(Paint.Align.LEFT);
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                canvas.drawText(timeStamp.toString(),250,250,paint);
+
+                //Getting the height of the device's screen
+                int mHeight= this.getResources().getDisplayMetrics().heightPixels;
+
+                //Drawing text to bottom left corner
+                canvas.drawText(timeStamp.toString(),0, (mHeight*2)+paint.getTextSize(),paint);
 
                 File image= createImageFile("new");
                 FileOutputStream out=new FileOutputStream(image);
