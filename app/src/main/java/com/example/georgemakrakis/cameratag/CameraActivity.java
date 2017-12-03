@@ -5,45 +5,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.hardware.Camera;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
-import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
 public class CameraActivity extends AppCompatActivity
 {
@@ -59,6 +44,7 @@ public class CameraActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
         mImageView = (ImageView) findViewById(R.id.imageview1);
+
         //Through an exception, in this way the VM ignores the file URI exposure.
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -84,27 +70,6 @@ public class CameraActivity extends AppCompatActivity
                 startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
-
-
-        // We create an instance of Camera
-//        mCamera = getCameraInstance();
-//
-//        // Create our Preview view and set it as the content of our activity.
-//        mPreview = new CameraPreview(this, mCamera);
-//        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-//        preview.addView(mPreview);
-//
-//        // Add a listener to the Capture button
-//        Button captureButton = (Button) findViewById(R.id.button_capture);
-//        captureButton.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                // get an image from the camera
-//                mCamera.takePicture(null, null, mPicture);
-//            }
-//        });
     }
 
 
@@ -179,12 +144,13 @@ public class CameraActivity extends AppCompatActivity
             try
             {
                 mImageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(mCurrentPhotoPath));
-                //Bitmap photo = (Bitmap) data.getExtras().get("data");
+
                 //create bitmap with a canvas
                 Bitmap newPhoto = Bitmap.createBitmap(mImageBitmap);
                 mutableBitmap = newPhoto.copy(Bitmap.Config.ARGB_8888, true);
                 Canvas canvas = new Canvas(mutableBitmap);
                 canvas.drawBitmap(mutableBitmap,0,0,null);
+
                 //draw the text
                 Paint paint = new Paint();
                 paint.setColor(Color.RED);
@@ -196,7 +162,7 @@ public class CameraActivity extends AppCompatActivity
                 int mHeight= this.getResources().getDisplayMetrics().heightPixels;
 
                 //Drawing text to bottom left corner
-                canvas.drawText(timeStamp.toString()+""+getAddress(),0, (mHeight*2)+paint.getTextSize(),paint);
+                canvas.drawText(timeStamp.toString()+"\n"+getAddress(),0, (mHeight*2)+paint.getTextSize(),paint);
 
                 File image= createImageFile("new");
                 FileOutputStream out=new FileOutputStream(image);
